@@ -64,6 +64,16 @@ function GetFrameworkFromConfig()
 	}
 }
 
+function GetManagedPipelineModeFromEnv()
+{
+    if ($env:managedPipelineMode -eq 'Classic')
+    {
+        return 'Classic'
+    }
+
+    return 'Integrated'
+}
+
 function AddApplicationPool([ref]$applicationHost)
 {
     Write-Output("Creating application pool in applicationHost.config")
@@ -81,7 +91,8 @@ function AddApplicationPool([ref]$applicationHost)
 	$element = $applicationHost.Value.CreateElement("add")
 	$element.SetAttribute('name', $script:appPoolName)
 	$element.SetAttribute('enable32BitAppOnWin64', $enable32bit)
-    $element.SetAttribute('managedPipelineMode', 'Classic')
+    $pipelineMode = GetManagedPipelineModeFromEnv
+    $element.SetAttribute('managedPipelineMode', $pipelineMode)
 	$framework = GetFrameworkFromConfig
 	$element.SetAttribute('managedRuntimeVersion', $framework)
 	$null = $applicationHost.Value.configuration."system.applicationHost".applicationPools.AppendChild($element)
