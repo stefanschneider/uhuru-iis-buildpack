@@ -81,6 +81,7 @@ function AddApplicationPool([ref]$applicationHost)
 	$element = $applicationHost.Value.CreateElement("add")
 	$element.SetAttribute('name', $script:appPoolName)
 	$element.SetAttribute('enable32BitAppOnWin64', $enable32bit)
+    $element.SetAttribute('managedPipelineMode', 'Classic')
 	$framework = GetFrameworkFromConfig
 	$element.SetAttribute('managedRuntimeVersion', $framework)
 	$null = $applicationHost.Value.configuration."system.applicationHost".applicationPools.AppendChild($element)
